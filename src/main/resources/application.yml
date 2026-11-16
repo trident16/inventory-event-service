@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: inventory-event-service
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/inventory}
+      auto-index-creation: true
+
+server:
+  port: 8080
