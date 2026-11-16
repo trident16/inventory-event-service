@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * Access rules:
  * <ul>
- *   <li>/api/auth/** - public (register, login)</li>
+ *   <li>/api/auth/** and /actuator/health - public</li>
  *   <li>GET /api/items/** - any signed-in user</li>
  *   <li>POST /api/items/{id}/stock - USER or ADMIN</li>
  *   <li>Creating, editing and deleting items - ADMIN only</li>
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/actuator/health", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/items/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/items/*/stock").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/items/**").hasRole("ADMIN")
