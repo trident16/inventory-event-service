@@ -6,6 +6,7 @@ import com.tarunnalla.inventory.item.dto.StockAdjustmentRequest;
 import com.tarunnalla.inventory.item.dto.UpdateItemRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +51,10 @@ public class ItemController {
     }
 
     @PostMapping("/{id}/stock")
-    public ItemResponse adjustStock(@PathVariable String id, @Valid @RequestBody StockAdjustmentRequest request) {
-        return itemService.adjustStock(id, request);
+    public ItemResponse adjustStock(@PathVariable String id,
+                                    @Valid @RequestBody StockAdjustmentRequest request,
+                                    Authentication authentication) {
+        return itemService.adjustStock(id, request, authentication.getName());
     }
 
     @DeleteMapping("/{id}")

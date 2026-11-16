@@ -80,7 +80,7 @@ class ItemControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     void regularUserCanAdjustStock() throws Exception {
-        when(itemService.adjustStock(eq("abc"), any())).thenReturn(sampleResponse(15));
+        when(itemService.adjustStock(eq("abc"), any(), any())).thenReturn(sampleResponse(15));
 
         mockMvc.perform(post("/api/items/abc/stock")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ class ItemControllerTest {
     @Test
     @WithMockUser
     void removingTooMuchStockReturns409() throws Exception {
-        when(itemService.adjustStock(eq("abc"), any()))
+        when(itemService.adjustStock(eq("abc"), any(), any()))
                 .thenThrow(new ConflictException("only 3 in stock"));
 
         mockMvc.perform(post("/api/items/abc/stock")

@@ -5,11 +5,32 @@ spring:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/inventory}
       auto-index-creation: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+        spring.json.add.type.headers: false
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # ErrorHandlingDeserializer stops one malformed message from blocking the partition forever
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.value.default.type: com.tarunnalla.inventory.events.StockChangedEvent
+        spring.json.trusted.packages: com.tarunnalla.inventory.events
 
 server:
   port: 8080
 
 app:
+  kafka:
+    topics:
+      stock-changed: inventory.stock-changed
   jwt:
     # Development-only default. Always set JWT_SECRET (base64, at least 256 bits) outside local dev.
     secret: ${JWT_SECRET:5rXDMbL2pUSlvDYoNyHCTiOX3sEMu4RmicNT/LnI+o3QfVDGNVWPnv8a9NMZEF0L}
