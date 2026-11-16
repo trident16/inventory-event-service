@@ -1,13 +1,19 @@
 package com.tarunnalla.inventory.item;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
+
 /**
  * A product kept in the warehouse, identified by a unique SKU.
+ * <p>
+ * {@code version} enables optimistic locking, so two concurrent stock
+ * adjustments on the same item cannot silently overwrite each other.
  */
 @Document(collection = "items")
 public class Item {
@@ -15,18 +21,23 @@ public class Item {
     @Id
     private String id;
 
-    @NotBlank
     @Indexed(unique = true)
     private String sku;
 
-    @NotBlank
     private String name;
 
-    @Min(0)
     private int quantity;
 
-    @Min(0)
     private int lowStockThreshold;
+
+    @Version
+    private Long version;
+
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant updatedAt;
 
     public Item() {
     }
@@ -36,6 +47,10 @@ public class Item {
         this.name = name;
         this.quantity = quantity;
         this.lowStockThreshold = lowStockThreshold;
+    }
+
+    public boolean isLowStock() {
+        return quantity <= lowStockThreshold;
     }
 
     public String getId() {
@@ -76,5 +91,29 @@ public class Item {
 
     public void setLowStockThreshold(int lowStockThreshold) {
         this.lowStockThreshold = lowStockThreshold;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

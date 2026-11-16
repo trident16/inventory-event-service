@@ -1,5 +1,9 @@
 package com.tarunnalla.inventory.item;
 
+import com.tarunnalla.inventory.item.dto.CreateItemRequest;
+import com.tarunnalla.inventory.item.dto.ItemResponse;
+import com.tarunnalla.inventory.item.dto.StockAdjustmentRequest;
+import com.tarunnalla.inventory.item.dto.UpdateItemRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,24 +29,29 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> list() {
+    public List<ItemResponse> list() {
         return itemService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Item get(@PathVariable String id) {
+    public ItemResponse get(@PathVariable String id) {
         return itemService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Item create(@Valid @RequestBody Item item) {
-        return itemService.create(item);
+    public ItemResponse create(@Valid @RequestBody CreateItemRequest request) {
+        return itemService.create(request);
     }
 
     @PutMapping("/{id}")
-    public Item update(@PathVariable String id, @Valid @RequestBody Item item) {
-        return itemService.update(id, item);
+    public ItemResponse update(@PathVariable String id, @Valid @RequestBody UpdateItemRequest request) {
+        return itemService.update(id, request);
+    }
+
+    @PostMapping("/{id}/stock")
+    public ItemResponse adjustStock(@PathVariable String id, @Valid @RequestBody StockAdjustmentRequest request) {
+        return itemService.adjustStock(id, request);
     }
 
     @DeleteMapping("/{id}")
