@@ -8,3 +8,13 @@ spring:
 
 server:
   port: 8080
+
+app:
+  jwt:
+    # Development-only default. Always set JWT_SECRET (base64, at least 256 bits) outside local dev.
+    secret: ${JWT_SECRET:5rXDMbL2pUSlvDYoNyHCTiOX3sEMu4RmicNT/LnI+o3QfVDGNVWPnv8a9NMZEF0L}
+    expiration: ${JWT_EXPIRATION:1h}
+  admin:
+    # An admin account is created on startup only when both values are set.
+    username: ${ADMIN_USERNAME:}
+    password: ${ADMIN_PASSWORD:}
